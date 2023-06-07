@@ -7,6 +7,7 @@ from schemas.advertisement import AdvertisementResponse, AdvertisementCreate, Ad
 from utils.images import save_image, remove_image
 
 advertisement_route = APIRouter()
+IMAGE_PATH = 'public/advertisements'
 
 @advertisement_route.get('/', response_class=JSONResponse, response_model=list[AdvertisementResponse])
 async def get_advertisements():
@@ -21,7 +22,7 @@ async def get_advertisement(id : int):
 
 @advertisement_route.post('/', response_class=JSONResponse, response_model=AdvertisementResponse)
 async def create_advertisement(advertisement : AdvertisementCreate = Depends()):
-    filename = await save_image(advertisement.file, 'public/advertisements')
+    filename = await save_image(advertisement.file, IMAGE_PATH)
     new_advertisement = Advertisement(
         advertisement_title = advertisement.advertisement_title,
         advertisement_description = advertisement.advertisement_description,
@@ -51,6 +52,6 @@ async def delete_advertisement(id : int):
     db_advertisement = session.get(Advertisement, id)
     if not db_advertisement:
         raise HTTPException(404)
-    await remove_image(db_advertisement.advertisement_image, 'public/advertisements')
+    await remove_image(db_advertisement.advertisement_image, IMAGE_PATH)
     session.delete(db_advertisement)
     session.commit()

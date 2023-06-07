@@ -7,6 +7,7 @@ from schemas.product import ProductImageResponse, ProductImageCreate, ProductIma
 from utils.images import save_image, remove_image
 
 product_route = APIRouter()
+IMAGE_PATH = 'public/products'
 
 @product_route.get('/product_category', response_class=JSONResponse, response_model=list[ProductCategoryResponse])
 async def get_product_categories():
@@ -93,7 +94,7 @@ async def get_product_images():
     return session.query(ProductImage).all()
 
 @product_route.get('/image/{id}', response_class=JSONResponse, response_model=ProductImageResponse)
-async def get_product_image(id : int):
+async def get_product_image(id : str):
     product_image = session.get(ProductImage, id)
     if not product_image:
         raise HTTPException(404)
@@ -101,7 +102,7 @@ async def get_product_image(id : int):
 
 @product_route.post('/image', response_class=JSONResponse, response_model=ProductImageResponse)
 async def create_product_image(product_image : ProductImageCreate = Depends()):
-    filename = await save_image(product_image.file, dest='public/product')
+    filename = await save_image(product_image.file, dest=IMAGE_PATH)
     new_image = ProductImage(name = filename, product_id = product_image.product_id)
     session.add(new_image)
     session.commit()
@@ -126,7 +127,7 @@ async def delete_product_image(id : str):
     db_image = session.get(ProductImage, id)
     if not db_image:
         raise HTTPException(404)
-    await remove_image(id, 'public/product')
+    await remove_image(id, IMAGE_PATH)
     session.delete(db_image)
     session.commit()
 

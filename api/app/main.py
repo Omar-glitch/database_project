@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import uvicorn
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -23,12 +23,12 @@ app.include_router(pharmacy_route, prefix='/pharmacy', tags=['Pharmacies'])
 app.include_router(product_route, prefix='/product', tags=['Products'])
 app.include_router(inventory_route, prefix='/inventory', tags=['Inventories'])
 app.include_router(advertisement_route, prefix='/advertisement', tags=['Advertisements'])
-app.mount('/static', StaticFiles(directory='/code/app/static'), name='static')
-templates = Jinja2Templates(directory='/code/app/templates')
+app.mount('/static', StaticFiles(directory='static'), name='static')
+templates = Jinja2Templates(directory='templates')
 
 @app.get('/')
-async def home():
-    return 'si'
+async def home(request : Request):
+    return templates.TemplateResponse('index.html', { 'request' : request })
 
 @app.on_event("shutdown")
 def shutdown_event():

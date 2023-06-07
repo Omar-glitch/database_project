@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, Response, FileResponse, StreamingResponse
 from fastapi.exceptions import HTTPException
 from utils.database import session
 from utils.models import Pharmacy, PharmacyImage
@@ -7,13 +7,14 @@ from schemas.pharmacy import PharmacyCreate, PharmacyResponse, PharmacyUpdate, P
 from utils.images import save_image, remove_image
 
 pharmacy_route = APIRouter()
+IMAGE_PATH = 'public/pharmacies'
 
 @pharmacy_route.get('/image', response_class=JSONResponse, response_model=list[PharmacyImageResponse])
 async def get_pharmacie_images():
     return session.query(PharmacyImage).all()
 
 @pharmacy_route.get('/image/{id}', response_class=JSONResponse, response_model=PharmacyImageResponse)
-async def get_pharmacy_image(id : int):
+async def get_pharmacy_image(id : str):
     pharmacy_image = session.get(PharmacyImage, id)
     if not pharmacy_image:
         raise HTTPException(404)
@@ -21,7 +22,7 @@ async def get_pharmacy_image(id : int):
 
 @pharmacy_route.post('/image', response_class=JSONResponse, response_model=PharmacyImageResponse)
 async def create_pharmacy_image(pharmacy_image : PharmacyImageCreate = Depends()):
-    filename = await save_image(pharmacy_image.file, dest='public/pharmacies')
+    filename = await save_image(pharmacy_image.file, dest=IMAGE_PATH)
     new_image = PharmacyImage(name = filename, pharmacy_id = pharmacy_image.pharmacy_id)
     session.add(new_image)
     session.commit()
@@ -46,7 +47,7 @@ async def delete_pharmacy_image(id : str):
     db_image = session.get(PharmacyImage, id)
     if not db_image:
         raise HTTPException(404)
-    await remove_image(id, 'public/pharmacies')
+    await remove_image(id, IMAGE_PATH)
     session.delete(db_image)
     session.commit()
 
