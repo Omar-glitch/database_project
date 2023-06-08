@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -11,11 +12,20 @@ from utils.database import session
 from utils.settings import Settings
 
 settings = Settings()
+origins = ['*']
 
 app = FastAPI(
     title="PharmaGuide API", 
     description="API for the registration of pharmacies and their products.",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(user_route, prefix='/user', tags=['Users'])
