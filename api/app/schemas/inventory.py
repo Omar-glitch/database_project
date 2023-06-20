@@ -15,6 +15,8 @@ class InventoryCreate(InventoryBase):
 class InventoryUpdate(BaseModel):
     product_id : Optional[int] = None
     pharmacy_id : Optional[int] = None
+    stock : Optional[int] = None
+    price : Optional[float] = None
 
 
 class InventoryResponse(InventoryBase):

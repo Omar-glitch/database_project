@@ -7,13 +7,13 @@ class PharmacyImageBase(BaseModel):
 
 
 class PharmacyImageCreate(PharmacyImageBase):
-    pharmacy_id : str
-    file : UploadFile
+    pharmacy_id : int
+    name : UploadFile
 
 
 class PharmacyImageUpdate(PharmacyImageBase):
     pharmacy_id : Optional[int] = None
-    file : Optional[UploadFile] = None
+    name : Optional[UploadFile] = None
 
 
 class PharmacyImageResponse(PharmacyImageBase):

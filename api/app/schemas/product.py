@@ -27,12 +27,12 @@ class ProductImageBase(BaseModel):
 
 class ProductImageCreate(ProductImageBase):
     product_id : str
-    file : UploadFile
+    name : UploadFile
 
 
 class ProductImageUpdate(ProductImageBase):
     product_id : Optional[int] = None
-    file : Optional[UploadFile] = None
+    name : Optional[UploadFile] = None
 
 
 class ProductImageResponse(ProductImageBase):
@@ -61,6 +61,7 @@ class ProductUpdate(ProductBase):
 
 class ProductResponse(ProductBase):
     product_id : int
+    images: list[ProductImageResponse]
 
     class Config:
         orm_mode = True

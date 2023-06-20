@@ -68,6 +68,8 @@ class Product(Base):
     name = Column(String(60), nullable=False)
     code = Column(String(12), nullable=False)
     description = Column(String(200))
+    images = relationship("ProductImage", back_populates="product")
+
 
 
 class ProductCategory(Base):
@@ -83,7 +85,8 @@ class ProductImage(Base):
     __table_args__ = { 'schema' : 'pharmaguide' }
 
     name = Column(String(44), primary_key=True)
-    pharmacy_id = Column(Integer, ForeignKey('pharmaguide.product.product_id'))
+    product_id = Column(Integer, ForeignKey('pharmaguide.product.product_id'))
+    product = relationship("Product", back_populates="images")
 
 
 class Inventory(Base):

@@ -15,7 +15,8 @@ class AdvertisementCreate(AdvertisementBase):
 class AdvertisementUpdate(BaseModel):
     advertisement_title : Optional[str] = None
     advertisement_description : Optional[str] = None
-    file : Optional[UploadFile] = None
+    advertisement_image : Optional[UploadFile] = None
+    owner : Optional[int] = None
     
 
 class AdvertisementResponse(AdvertisementBase):
